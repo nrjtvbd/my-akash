@@ -1,12 +1,12 @@
 name: Generate Akash M3U
 on:
-  schedule:
-    - cron: '0 0 * * *' # প্রতিদিন একবার অটো চলবে
-  workflow_dispatch: # আপনি চাইলে যেকোনো সময় ম্যানুয়ালি রান করতে পারবেন
+  workflow_dispatch: # আপনি ম্যানুয়ালি রান করতে পারবেন
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: # এখানে সরাসরি পারমিশন লিখে দেওয়া হয়েছে
+      contents: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -14,18 +14,17 @@ jobs:
       - name: Generate M3U File
         run: |
           echo "#EXTM3U" > akash.m3u
-          # ১৭০০ থেকে ১৮০০ পর্যন্ত লুপ চলবে। আপনি চাইলে সংখ্যা পরিবর্তন করতে পারেন।
+          # ১৭০০ থেকে ১৮০০ পর্যন্ত লুপ
           for i in {1700..1800}
           do
             echo "#EXTINF:-1, Akash Go $i" >> akash.m3u
             echo "https://owrcovcrpy.gpcdn.net/bpk-tv/$i/output/index.m3u8" >> akash.m3u
           done
-          echo "Playlist generated successfully."
 
       - name: Commit and Push
         run: |
-          git config --global user.name "nrjtvbd-bot"
-          git config --global user.email "nrjtvbd@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add akash.m3u
           git commit -m "Auto generated Akash playlist" || exit 0
           git push
